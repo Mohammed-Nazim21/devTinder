@@ -1,18 +1,31 @@
 const express = require("express");
 
-const app = express(); // creating a express app. This is a instance of express. We have create a web server
+const { adminAuth, userAuth } = require("./middleware/auth");
 
-// request handler
-// app.use("/", (req, res) => {
-//   res.send("Hello! Welcome to Dashboard");
-// });
+const app = express();
 
-app.use("/test", (req, res) => {
-  res.send("Hello from server made using express");
+app.use("/admin", adminAuth);
+
+app.get("/admin/getData", (req, res) => {
+  console.log("Data Sent");
+  res.send("Data successully Sent");
 });
 
-app.use("/denji", (req, res) => {
-  res.send("Hello from Chainsaw Man, it is me Denji");
+app.get("/admin/deleteData", (req, res) => {
+  console.log("Data Deleted");
+  res.send("Data successfully Deleted");
+});
+
+app.use("/user", userAuth);
+
+app.get("/user/getData", (req, res, next) => {
+  console.log("User data successfully fetched");
+  res.send("Sending Ussr Data");
+});
+
+app.get("/user/deleteData", (req, res, next) => {
+  console.log("User data Deleted");
+  res.send("User Deleted");
 });
 
 app.listen(7777, () => {
