@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const validator = require("validator");
 const userSchema = new mongoose.Schema(
   {
     firstName: {
@@ -18,12 +19,22 @@ const userSchema = new mongoose.Schema(
       required: true,
       lowercase: true,
       trim: true,
+      validate(value) {
+        if (!validator.isEmail(value)) {
+          throw new Error("Invalid Email " + value);
+        }
+      },
     },
     password: {
       type: String,
       required: true,
       minLength: 8,
       maxLength: 50,
+      validate(value) {
+        if (!validator.isStrongPassword(value)) {
+          throw new Error("Password is weak");
+        }
+      },
     },
     age: {
       type: Number,
@@ -41,6 +52,11 @@ const userSchema = new mongoose.Schema(
       type: String,
       default:
         "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
+      validate(value) {
+        if (!validator.isURL(value)) {
+          throw new Error("Photo URL invalid: " + value);
+        }
+      },
     },
     about: {
       type: String,
